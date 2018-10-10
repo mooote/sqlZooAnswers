@@ -1,8 +1,7 @@
 # sqlZooAnswers
-Query answers are up.
-question link
-http://sqlzoo.net/wiki/SQL_Tutorial
-answer link 
-add ?answer=1 to urls
-
-Non-query answers are omitted. Indent is not being used. 
+Query answers are up.<br/>
+question link<br/>
+http://sqlzoo.net/wiki/SQL_Tutorial <br/>
+answer link<br/>
+add ?answer=1 to urls<br/>
+Non-query answers are omitted. Indent is not being used.
