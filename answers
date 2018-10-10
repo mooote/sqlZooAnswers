@@ -1,0 +1,244 @@
+-------------
+SELECT basics
+-------------
+Q1
+SELECT name, population
+FROM world
+WHERE population BETWEEN 1000000 AND 1250000
+Q3
+SELECT name FROM world
+WHERE name LIKE '%a' OR name LIKE '%l' -- look for names end with "a" or "l"
+Q6
+SELECT name, area, population
+FROM world
+WHERE area > 50000 AND population < 10000000
+Q7
+SELECT name, population/area
+FROM world
+WHERE name IN ('China', 'Nigeria', 'France', 'Australia')
+--------------------------
+SELECT from WORLD Tutorial
+--------------------------
+Q1
+SELECT name, continent, population FROM world
+Q2
+SELECT name 
+FROM world
+WHERE population >= 200000000
+Q3
+SELECT name, GDP/population AS GDP
+FROM  world 
+WHERE population >= 200000000
+Q4
+SELECT name, population/1000000
+FROM  world 
+WHERE continent = 'South America'
+Q5
+SELECT name, population
+FROM  world 
+WHERE name IN ('France', 'Germany', 'Italy')
+Q6
+SELECT name
+FROM  world 
+WHERE name LIKE '%United%'
+Q7
+SELECT name, population, area
+FROM  world 
+WHERE area > 3000000 OR population > 250000000
+Q8
+SELECT name, population, area
+FROM  world 
+ORDER BY population OR area ASC
+Q9
+SELECT name, ROUND(population/1000000, 2),  ROUND(GDP/1000000000, 2)
+FROM  world 
+WHERE continent = 'South America'
+Q10
+SELECT name, ROUND(ROUND(gdp/population, 0), -3)
+FROM world
+WHERE gdp > 1000000000000
+Q11
+SELECT name, capital
+FROM world
+WHERE LENGTH(name) = LENGTH(capital) 
+Q12
+SELECT name, capital
+FROM world
+WHERE LEFT(name,1) = LEFT(capital,1) AND  name <> capital
+Q13
+SELECT name
+FROM world
+WHERE name LIKE '%a%'
+AND name LIKE '%e%'
+AND name LIKE '%i%'
+AND name LIKE '%o%'
+AND name LIKE '%u%'
+AND name NOT LIKE '% %'
+--------------------------
+SELECT from Nobel Tutorial
+--------------------------
+Q1
+SELECT yr, subject, winner
+FROM nobel
+WHERE yr = 1950
+Q2
+SELECT winner
+FROM nobel
+WHERE yr = 1962
+AND subject = 'Literature'
+Q3
+SELECT yr, subject
+FROM nobel
+WHERE winner = 'Albert Einstein'
+Q4
+SELECT winner
+FROM nobel
+WHERE subject = 'Peace'
+AND yr >= 2000
+Q5
+SELECT yr,subject,winner
+FROM nobel
+WHERE subject = 'Literature'
+AND yr BETWEEN 1980 AND 1989
+Q6
+SELECT * FROM nobel
+WHERE  winner IN ('Theodore Roosevelt',
+  'Woodrow Wilson',
+  'Jimmy Carter',
+  'Barack Obama')
+Q7
+SELECT winner 
+FROM nobel
+WHERE winner LIKE 'John %'
+Q8
+SELECT *
+FROM nobel
+WHERE (subject='physics' AND yr=1980)
+OR (subject='chemistry' AND yr=1984)
+Q9
+SELECT *
+FROM nobel
+WHERE (subject NOT IN 'Chemistry', 'Medicine') 
+AND yr = 1980
+Q10
+SELECT *
+FROM nobel 
+WHERE (subject='Medicine' and yr <1910) 
+OR (subject='Literature' AND yr>=2004)
+Q11
+SELECT *
+FROM nobel 
+WHERE winner in 'Peter Grünberg'
+Q12
+SELECT *
+FROM nobel 
+WHERE winner in ('EUGENE O''NEILL') --Noitce escape single quate is being used 
+Q13
+SELECT yr, name, winner
+FROM nobel 
+WHERE winner LIKE 'Sir %'
+ORDER BY yr DESC, name 
+Q14
+SELECT winner, subject
+FROM nobel
+WHERE yr=1984 
+ORDER BY subject in ('Physics','Chemistry'),subject,winner 
+-- reminder applied boolean 0, 1 and 1 which Physics and Chemistry pushed down in rows 
+----------
+Nobel Quiz
+----------
+Q1
+SELECT winner 
+FROM nobel
+WHERE winner LIKE 'C%' AND winner LIKE '%n'
+Q2
+SELECT COUNT(subject) 
+FROM nobel
+WHERE subject = 'Chemistry'
+AND yr BETWEEN 1950 and 1960
+Q3
+SELECT COUNT(subject) 
+FROM nobel
+WHERE subject = 'Chemistry'
+AND yr BETWEEN 1950 AND 1960
+Q4
+SELECT yr 
+FROM nobel
+WHERE yr NOT IN (SELECT yr FROM nobel WHERE subject IN ('Chemistry','Physics')) -- notice yr is selcted
+Q6
+SELECT DISTINCT yr
+FROM nobel
+WHERE subject='Medicine' 
+AND yr NOT IN (SELECT yr FROM nobel WHERE subject='Literature')
+AND yr NOT IN (SELECT yr FROM nobel WHERE subject='Peace')
+-----------------------------
+SELECT within SELECT Tutorial
+-----------------------------
+Q1
+SELECT name 
+FROM world
+WHERE population > (SELECT population FROM world WHERE name='Russia')                                     
+Q2
+SELECT name 
+FROM world
+WHERE continent='Europe' AND gdp/population > (SELECT gdp/population FROM world WHERE name='United Kingdom')
+Q3
+SELECT name, continent 
+FROM world
+WHERE continent IN (SELECT continent FROM world WHERE name IN ('Argentina', 'Australia'))
+ORDER BY name
+Q4
+SELECT name,population 
+FROM world
+WHERE population BETWEEN (SELECT population+1 FROM world WHERE name='Canada')
+AND (SELECT population-1 FROM world WHERE name='Poland')
+Q5
+SELECT name, CONCAT(ROUND(100*poulation/(SELECT population FROM world WHERE name = 'Germany')), '%')
+FROM world
+WHERE continent = 'Europe'
+Q6
+SELECT name
+FROM world
+WHERE gdp > ALL (SELECT name FROM world WHERE gdp>0 AND contient = 'Europe')
+Q7
+--notice correlated subquery is being used 
+SELECT continent, name, area 
+FROM world x
+WHERE area >= ALL (SELECT area FROM world y WHERE y.continent=x.continent AND area > 0 )
+Q8
+SELECT continent,name 
+FROM world x
+WHERE x.name <= ALL (SELECT name FROM world y WHERE x.continent=y.continent)
+Q9
+SELECT continent, name, population
+FROM world x
+WHERE 25000000 >= ALL (SELECT population FROM world y WHERE x.continent = y.continent AND y.population>0)
+Q10
+SELECT name, continent
+FROM  world x
+WHERE population > ALL (SELECT population*3 FROM world y WHERE x.continent=y.continent AND y.name != x.name)
+------------------
+Nested SELECT Quiz
+------------------
+Q1
+SELECT region, name, population 
+FROM bbc x 
+WHERE population <= ALL (SELECT population FROM bbc y WHERE y.region=x.region AND population>0)
+Q2
+SELECT region, name, population 
+FROM bbc x 
+WHERE population <= ALL (SELECT population FROM bbc y WHERE y.region=x.region AND population>0)
+Q3
+SELECT name, region 
+FROM bbc x
+WHERE population < ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name != x.name)
+Q5
+SELECT name 
+FROM bbc
+WHERE gdp > (SELECT MAX(gdp) FROM bbc WHERE region = 'Africa')
+Q6
+SELECT name 
+FROM bbc
+WHERE population < (SELECT population FROM bbc WHERE name='Russia')
+AND population > (SELECT population FROM bbc WHERE name='Denmark')
+ 
